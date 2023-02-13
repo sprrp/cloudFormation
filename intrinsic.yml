@@ -1,0 +1,31 @@
+#  Example of using intrinsic functions in a CloudFormation template
+Resources:
+  MyInstance:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
+      InstanceType: !Ref InstanceType
+      SecurityGroupIds:
+        - !Ref MySecurityGroup
+  MySecurityGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupDescription: "My security group"
+      SecurityGroupIngress:
+        - IpProtocol: "tcp"
+          FromPort: 22
+          ToPort: 22
+          CidrIp: !Ref SSHLocation
+Mappings:
+  RegionMap:
+    us-east-1:
+      AMI: ami-12345678
+    us-west-1:
+      AMI: ami-87654321
+Parameters:
+  InstanceType:
+    Type: String
+    Default: t2.micro
+  SSHLocation:
+    Type: String
+    Default: 0.0.0.0/0

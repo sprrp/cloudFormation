@@ -1,0 +1,7 @@
+# create an Amazon S3 bucket as part of your CloudFormation stack.
+---
+Resources:
+  MyBucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      BucketName: my-bucket-name

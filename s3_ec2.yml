@@ -1,0 +1,31 @@
+# You can also specify dependencies between resources in your CloudFormation template.
+# For example, if you wanted to create an S3 bucket and then create an EC2 instance 
+# that uses the S3 bucket, you would define the resources like so:
+Resources:
+  MyS3Bucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      BucketName: "my-bucket-name"
+  MyEC2Instance:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      ImageId: "ami-0c55b159cbfafe1f0"
+      InstanceType: "t2.micro"
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          echo "Hello, World!" > /var/www/html/index.html
+      SecurityGroupIds:
+        - !Ref MySecurityGroup
+      Volumes:
+        - Device: "/dev/sdf"
+          VolumeId: !Ref MyS3Bucket
+  MySecurityGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupDescription: "Allow HTTP traffic"
+      SecurityGroupIngress:
+        - IpProtocol: "tcp"
+          FromPort: 80
+          ToPort: 80
+          CidrIp: "0.0.0.0/0"
